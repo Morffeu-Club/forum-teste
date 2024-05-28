@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fórum Anônimo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        .post {
+            background: #fafafa;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+    <!-- Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZayS2B7JvmxX8pnaNJGbBnXP78U5Eq6I",
+            authDomain: "forum-teste-b771e.firebaseapp.com",
+            projectId: "forum-teste-b771e",
+            storageBucket: "forum-teste-b771e.appspot.com",
+            messagingSenderId: "276889858845",
+            appId: "1:276889858845:web:b23bdd86955b3a2c09e7f4",
+            measurementId: "G-YFG9BKVLRD",
+            databaseURL: "https://forum-teste-b771e-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const postForm = document.getElementById('postForm');
+            const postsContainer = document.getElementById('postsContainer');
+            const postContent = document.getElementById('postContent');
+
+            const fetchPosts = () => {
+                const postsRef = ref(database, 'posts');
+                onValue(postsRef, (snapshot) => {
+                    const posts = snapshot.val();
+                    postsContainer.innerHTML = '';
+                    for (let id in posts) {
+                        const post = posts[id];
+                        const postDiv = document.createElement('div');
+                        postDiv.className = 'post';
+                        postDiv.textContent = post.content + ' (' + new Date(post.timestamp).toLocaleString() + ')';
+                        postsContainer.appendChild(postDiv);
+                    }
+                });
+            };
+
+            const submitPost = (content) => {
+                const postsRef = ref(database, 'posts');
+                const newPostRef = push(postsRef);
+                newPostRef.set({
+                    content: content,
+                    timestamp: Date.now()
+                });
+            };
+
+            postForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const content = postContent.value.trim();
+                if (content) {
+                    submitPost(content);
+                    postContent.value = '';
+                    fetchPosts();
+                }
+            });
+
+            fetchPosts();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Fórum Anônimo</h1>
+        <form id="postForm">
+            <textarea id="postContent" placeholder="Escreva sua postagem aqui..." required></textarea>
+            <button type="submit">Postar</button>
+        </form>
+        <div id="postsContainer"></div>
+    </div>
+</body>
+</html>
