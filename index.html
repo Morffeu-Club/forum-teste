@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fórum Anônimo 2</title>
+    <title>Fórum Anônimo</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -61,11 +61,10 @@
             border-radius: 4px;
         }
     </style>
-    <!-- Firebase -->
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -106,7 +105,7 @@
             const submitPost = async (content) => {
                 const postsRef = ref(database, 'posts');
                 const newPostRef = push(postsRef);
-                await newPostRef.set({
+                await set(newPostRef, {
                     content: content,
                     timestamp: Date.now()
                 });
