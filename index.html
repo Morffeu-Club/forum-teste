@@ -103,20 +103,20 @@
                 });
             };
 
-            const submitPost = (content) => {
+            const submitPost = async (content) => {
                 const postsRef = ref(database, 'posts');
                 const newPostRef = push(postsRef);
-                newPostRef.set({
+                await newPostRef.set({
                     content: content,
                     timestamp: Date.now()
                 });
             };
 
-            postForm.addEventListener('submit', (e) => {
+            postForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const content = postContent.value.trim();
                 if (content) {
-                    submitPost(content);
+                    await submitPost(content);
                     postContent.value = '';
                     fetchPosts();
                 }
