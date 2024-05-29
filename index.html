@@ -1,3 +1,8 @@
+Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui está o código atualizado:
+
+### Código HTML, CSS e JavaScript
+
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -21,9 +26,17 @@
         .navbar .logo {
             font-size: 24px;
         }
-        .navbar .login-icon {
+        .navbar .login-btn {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 10px 20px;
             cursor: pointer;
-            font-size: 24px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .navbar .login-btn:hover {
+            background-color: #777;
         }
         .hidden {
             display: none;
@@ -269,52 +282,4 @@
         window.onclick = function(event) {
             const modal = document.getElementById('loginModal');
             if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
-</head>
-<body>
-    <div class="navbar">
-        <div class="logo">Marketplace</div>
-        <div class="login-icon" onclick="showLoginModal()">
-            <i class="fas fa-user"></i>
-        </div>
-    </div>
-
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <div class="login-container">
-                <h1>Login</h1>
-                <form onsubmit="login(event)">
-                    <input type="email" name="email" placeholder="Email" required>
-                    <input type="password" name="password" placeholder="Senha" required>
-                    <button type="submit">Entrar</button>
-                    <p id="error-message" class="error"></p>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="post-container hidden" id="post-form">
-        <h1>Postar Produto</h1>
-        <form onsubmit="postProduct(event)">
-            <input type="text" name="title" placeholder="Título" required>
-            <textarea name="description" placeholder="Descrição" required></textarea>
-            <input type="text" name="price" placeholder="Preço" required>
-            <input type="text" name="imageUrl" placeholder="URL da Imagem" required>
-            <button type="submit">Postar</button>
-        </form>
-    </div>
-
-    <div class="posts-container" id="posts"></div>
-
-    <div id="product-details" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeDetails()">&times;</span>
-            <div id="details-content" class="product-details"></div>
-        </div>
-    </div>
-</body>
-</html>
+                modal.style.display
