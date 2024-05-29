@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar .logo {
+            font-size: 24px;
+        }
+        .navbar .login-icon {
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .hidden {
+            display: none;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+        }
+        .login-container, .post-container, .posts-container, .product-details {
+            max-width: 500px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .posts-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .post {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .post img {
+            max-width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .product-details {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            max-width: 800px;
+            margin: 5% auto;
+        }
+        .product-details img {
+            max-width: 200px;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .product-info {
+            max-width: 500px;
+        }
+        .product-info h1 {
+            font-size: 24px;
+            margin: 0 0 10px;
+        }
+        .product-info p {
+            margin: 5px 0;
+        }
+        .product-info .price {
+            font-size: 20px;
+            color: green;
+        }
+        .product-info .old-price {
+            font-size: 16px;
+            text-decoration: line-through;
+            color: #999;
+        }
+        .product-info .actions {
+            margin-top: 20px;
+        }
+        .product-info .actions button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .product-info .actions button.add-to-cart {
+            background-color: #007bff;
+            margin-right: 10px;
+        }
+    </style>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBZayS2B7JvmxX8pnaNJGbBnXP78U5Eq6I",
+            authDomain: "forum-teste-b771e.firebaseapp.com",
+            databaseURL: "https://forum-teste-b771e-default-rtdb.firebaseio.com",
+            projectId: "forum-teste-b771e",
+            storageBucket: "forum-teste-b771e.appspot.com",
+            messagingSenderId: "276889858845",
+            appId: "1:276889858845:web:b23bdd86955b3a2c09e7f4"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        let isAuthenticated = false;
+
+        async function login(event) {
+            event.preventDefault();
+            const email = document.querySelector('input[name="email"]').value;
+            const password = document.querySelector('input[name="password"]').value;
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                isAuthenticated = true;
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('post-form').classList.remove('hidden');
+                loadPosts();
+            } catch (error) {
+                const errorElement = document.getElementById('error-message');
+                errorElement.textContent = 'Usuário ou senha incorretos.';
+            }
+        }
+
+        async function postProduct(event) {
+            event.preventDefault();
+            if (!isAuthenticated) {
+                alert('Você precisa estar logado para postar.');
+                return;
+            }
+
+            const title = document.querySelector('input[name="title"]').value;
+            const description = document.querySelector('textarea[name="description"]').value;
+            const price = document.querySelector('input[name="price"]').value;
+            const imageUrl = document.querySelector('input[name="imageUrl"]').value;
+
+            try {
+                await db.ref('posts').push({
+                    title,
+                    description,
+                    price,
+                    imageUrl,
+                    date: new Date().toISOString()
+                });
+                alert('Produto postado com sucesso!');
+                loadPosts();
+            } catch (error) {
+                alert('Erro ao postar produto.');
+            }
+        }
+
+        async function loadPosts() {
+            const postsContainer = document.getElementById('posts');
+            postsContainer.innerHTML = '';
+            
+            try {
+                const snapshot = await db.ref('posts').orderByChild('date').once('value');
+                snapshot.forEach((childSnapshot) => {
+                    const post = childSnapshot.val();
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post';
+                    postElement.onclick = () => showDetails(post);
+                    postElement.innerHTML = `
+                        <img src="${post.imageUrl}" alt="${post.title}">
+                        <h3>${post.title}</h3>
+                        <p>Preço: ${post.price}</p>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            } catch (error) {
+                console.log("Erro ao carregar posts: ", error);
+            }
+        }
+
+        function showDetails(post) {
+            const detailsContainer = document.getElementById('product-details');
+            const detailsContent = document.getElementById('details-content');
+            detailsContent.innerHTML = `
+                <img src="${post.imageUrl}" alt="${post.title}">
+                <div class="product-info">
+                    <h1>${post.title}</h1>
+                    <p class="price">R$ ${post.price}</p>
+                    <p>${post.description}</p>
+                    <div class="actions">
+                        <button class="add-to-cart">Adicionar ao carrinho</button>
+                        <button>Comprar</button>
+                    </div>
+                </div>
+            `;
+            detailsContainer.classList.remove('hidden');
+            document.getElementById('posts').classList.add('hidden');
+        }
+
+        function closeDetails() {
+            document.getElementById('product-details').classList.add('hidden');
+            document.getElementById('posts').classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPosts);
+
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">Marketplace</div>
+        <div class="login-icon" onclick="showLoginModal()">
+            <i class="fas fa-user"></i>
+        </div>
+    </div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <div class="login-container">
+                <h1>Login</h1>
+                <form onsubmit="login(event)">
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Senha" required>
+                    <button type="submit">Entrar</button>
+                    <p id="error-message" class="error"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-container hidden" id="post-form">
+        <h1>Postar Produto</h1>
+        <form onsubmit="postProduct(event)">
+            <input type="text" name="title" placeholder="Título" required>
+            <textarea name="description" placeholder="Descrição" required></textarea>
+            <input type="text" name="price" placeholder="Preço" required>
+            <input type="text" name="imageUrl" placeholder="URL da Imagem" required>
+            <button type="submit">Postar</button>
+        </form>
+    </div>
+
+    <div class="posts-container" id="posts"></div>
+
+    <div id="product-details" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDetails()">&times;</span>
+            <div id="details-content" class="product-details"></div>
+        </div>
+    </div>
+</body>
+</html>
