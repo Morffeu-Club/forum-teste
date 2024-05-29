@@ -47,6 +47,10 @@
 		.gjs-heading {
 			margin:0;
 		}
+		#login-button {
+			display:flex;
+			justify-content:center;
+		}
 		#i2h2 {
 			display:flex;
 			justify-content:center;
