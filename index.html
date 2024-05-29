@@ -1,8 +1,3 @@
-Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui está o código atualizado:
-
-### Código HTML, CSS e JavaScript
-
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -12,67 +7,9 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .navbar {
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navbar .logo {
-            font-size: 24px;
-        }
-        .navbar .login-btn {
-            background-color: #555;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .navbar .login-btn:hover {
-            background-color: #777;
         }
         .hidden {
             display: none;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 5px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
         }
         .error {
             color: red;
@@ -96,7 +33,6 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
             padding: 10px;
             width: 200px;
             text-align: center;
-            cursor: pointer;
         }
         .post img {
             max-width: 100%;
@@ -104,60 +40,11 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
             border-bottom: 1px solid #ccc;
             margin-bottom: 10px;
         }
-        .product-details {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            max-width: 800px;
-            margin: 5% auto;
-        }
         .product-details img {
-            max-width: 200px;
+            max-width: 100%;
             height: auto;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .product-info {
-            max-width: 500px;
-        }
-        .product-info h1 {
-            font-size: 24px;
-            margin: 0 0 10px;
-        }
-        .product-info p {
-            margin: 5px 0;
-        }
-        .product-info .price {
-            font-size: 20px;
-            color: green;
-        }
-        .product-info .old-price {
-            font-size: 16px;
-            text-decoration: line-through;
-            color: #999;
-        }
-        .product-info .actions {
-            margin-top: 20px;
-        }
-        .product-info .actions button {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .product-info .actions button.add-to-cart {
-            background-color: #007bff;
-            margin-right: 10px;
         }
     </style>
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-database-compat.js"></script>
@@ -186,7 +73,7 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
             try {
                 const userCredential = await auth.signInWithEmailAndPassword(email, password);
                 isAuthenticated = true;
-                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('login-form').classList.add('hidden');
                 document.getElementById('post-form').classList.remove('hidden');
                 loadPosts();
             } catch (error) {
@@ -250,15 +137,10 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
             const detailsContent = document.getElementById('details-content');
             detailsContent.innerHTML = `
                 <img src="${post.imageUrl}" alt="${post.title}">
-                <div class="product-info">
-                    <h1>${post.title}</h1>
-                    <p class="price">R$ ${post.price}</p>
-                    <p>${post.description}</p>
-                    <div class="actions">
-                        <button class="add-to-cart">Adicionar ao carrinho</button>
-                        <button>Comprar</button>
-                    </div>
-                </div>
+                <h3>${post.title}</h3>
+                <p>${post.description}</p>
+                <p>Preço: ${post.price}</p>
+                <p>Data: ${new Date(post.date).toLocaleDateString()}</p>
             `;
             detailsContainer.classList.remove('hidden');
             document.getElementById('posts').classList.add('hidden');
@@ -270,16 +152,37 @@ Claro! Vou substituir o ícone de login por um botão de login na navbar. Aqui e
         }
 
         document.addEventListener('DOMContentLoaded', loadPosts);
+    </script>
+</head>
+<body>
+    <div class="login-container" id="login-form">
+        <h1>Login</h1>
+        <form onsubmit="login(event)">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+            <p id="error-message" class="error"></p>
+        </form>
+    </div>
 
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'block';
-        }
+    <div class="post-container hidden" id="post-form">
+        <h1>Postar Produto</h1>
+        <form onsubmit="postProduct(event)">
+            <input type="text" name="title" placeholder="Título" required>
+            <textarea name="description" placeholder="Descrição" required></textarea>
+            <input type="text" name="price" placeholder="Preço" required>
+            <input type="text" name="imageUrl" placeholder="URL da Imagem" required>
+            <button type="submit">Postar</button>
+        </form>
+    </div>
 
-        function closeLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
+    <div class="posts-container" id="posts">
+        <h1>Produtos</h1>
+    </div>
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('loginModal');
-            if (event.target === modal) {
-                modal.style.display
+    <div class="product-details hidden" id="product-details">
+        <button onclick="closeDetails()">Voltar</button>
+        <div id="details-content"></div>
+    </div>
+</body>
+</html>
