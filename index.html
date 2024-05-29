@@ -30,9 +30,10 @@
             margin: 0;
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-database.js"></script>
+    <!-- Carregar os scripts do Firebase como scripts tradicionais -->
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.1/firebase-database-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBZayS2B7JvmxX8pnaNJGbBnXP78U5Eq6I",
@@ -41,7 +42,7 @@
             projectId: "forum-teste-b771e",
             storageBucket: "forum-teste-b771e.appspot.com",
             messagingSenderId: "276889858845",
-            appId: "1:276889858845:web:3d9e09110c792cfe6f977f"
+            appId: "1:276889858845:web:b23bdd86955b3a2c09e7f4"
         };
 
         // Initialize Firebase
