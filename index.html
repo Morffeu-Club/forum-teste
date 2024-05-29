@@ -80,7 +80,7 @@
 
         // Configuração Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyBZayS2B7JvmxX8pnaNJGbBnXP78U5Eq6I",
+            apiKey: "SUA_API_KEY",
             authDomain: "forum-teste-b771e.firebaseapp.com",
             projectId: "forum-teste-b771e",
             storageBucket: "forum-teste-b771e.appspot.com",
@@ -181,4 +181,18 @@
                         postDiv.className = 'post';
                         postDiv.textContent = post.content + ' (' + new Date(post.timestamp).toLocaleString() + ')';
 
-                        if (
+                        if (auth.currentUser && auth.currentUser.uid === adminUid) {
+                            const deleteButton = document.createElement('button');
+                            deleteButton.textContent = 'Deletar';
+                            deleteButton.addEventListener('click', () => {
+                                remove(ref(database, `sections/${sectionId}/posts/${id}`));
+                            });
+                            postDiv.appendChild(deleteButton);
+                        }
+
+                        postsContainer.appendChild(postDiv);
+                    }
+                });
+            };
+
+            const submitPost = async (content, sectionId) => {
