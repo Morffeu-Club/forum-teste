@@ -28,7 +28,7 @@ input[type="password"],
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 10px;
     border: none;
     border-radius: 5px;
@@ -47,8 +47,8 @@ input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
 textarea:focus {
-    outline: none;
     background-color: rgba(255, 255, 255, 0.2);
+    outline: none;
 }
 
 button {
