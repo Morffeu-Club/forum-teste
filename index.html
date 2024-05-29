@@ -1,41 +1,42 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Lojinha da Aline</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace</title>
 	<link rel="stylesheet" href="style.css">
 	<script src="script.js"></script>
 </head>
-
 <body>
+    <div class="login-container" id="login-form">
+        <h1>Login</h1>
+        <form onsubmit="login(event)">
+            <div id="login-button">
+				<input type="email" name="email" placeholder="Email" required id="i0ef">
+			</div>
+			<div id="login-button">
+				<input type="password" name="password" placeholder="Senha" required id="iil4">
+            </div>
+			<div id="login-button">
+				<button type="submit" id="ij8x" >Entrar</button>
+			</div>
+            <p id="error-message" class="error"></p>
+        </form>
+    </div>
 
-<div class="login-container" id="login-form">
- <h1 class="gjs-heading" id="i2h2">Área exclusiva para administradores</h1>
-  <form method="get" id="i4st">
-	<input type="email" name="email" placeholder="Email" required id="i0ef"/>
-	<input type="password" name="password" placeholder="Senha" required id="iil4"/>
-    <p id="error-message" class="error"></p>
-	<button type="submit" id="ij8x" >Entrar</button>
-  </form>
- </div>
-	<div class="post-container hidden" id="post-form">
-		<h1>Postar Produto</h1>
-		<form onsubmit="postProduct(event)">
-			<input type="text" name="title" placeholder="Título" required>
-			<textarea name="description" placeholder="Descrição" required></textarea>
-			<input type="text" name="price" placeholder="Preço" required>
-			<input type="text" name="imageUrl" placeholder="URL da Imagem" required>
-			<button type="submit">Postar</button>
-		</form>
-	</div>
-	<div class="posts-container" id="posts">
-		<h1>Produtos</h1>
-	</div>
-	<div class="product-details hidden" id="product-details">
-		<button onclick="closeDetails()">Voltar</button>
-		<div id="details-content"></div>
-	</div>
+    <div class="post-container hidden" id="post-form">
+        <h1>Postar Produto</h1>
+        <form onsubmit="postProduct(event)">
+            <input type="text" name="title" placeholder="Título" required>
+            <textarea name="description" placeholder="Descrição" required></textarea>
+            <input type="text" name="price" placeholder="Preço" required>
+            <button type="submit">Postar</button>
+        </form>
+    </div>
+
+    <div class="posts-container" id="posts">
+        <h1>Produtos</h1>
+    </div>
 </body>
 </html>
+
